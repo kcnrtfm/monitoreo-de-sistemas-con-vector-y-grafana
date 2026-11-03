@@ -1,0 +1,58 @@
+# Configuración del agente Vector para GNU/Linux.
+# Reemplazar IP_DEL_SERVIDOR por la IP o nombre DNS del servidor de monitoreo.
+
+sources:
+  sistema:
+    type: host_metrics
+    scrape_interval_secs: 15
+    collectors:
+      - cpu
+      - disk
+      - filesystem
+      - load
+      - host
+      - memory
+      - network
+
+  identificacion:
+    type: exec
+    mode: scheduled
+    command:
+      - /usr/bin/python3
+      - /opt/vector/host-info.py
+    scheduled:
+      exec_interval_secs: 60
+    decoding:
+      codec: json
+
+transforms:
+  preparar_identificacion:
+    type: remap
+    inputs:
+      - identificacion
+    source: |
+      .value = 1
+      .virtualization = to_string(.virtualization) ?? "unknown"
+
+  metadatos:
+    type: log_to_metric
+    inputs:
+      - preparar_identificacion
+    metrics:
+      - type: gauge
+        field: value
+        name: host_info
+        tags:
+          host: "{{host}}"
+          os: "{{os}}"
+          kernel: "{{kernel}}"
+          architecture: "{{architecture}}"
+          virtualization: "{{virtualization}}"
+
+sinks:
+  prometheus:
+    type: prometheus_remote_write
+    inputs:
+      - sistema
+      - metadatos
+    endpoint: "http://IP_DEL_SERVIDOR:9090/api/v1/write"
