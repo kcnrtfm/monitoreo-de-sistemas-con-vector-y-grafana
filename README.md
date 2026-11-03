@@ -236,12 +236,4 @@ docker compose up -d
 
 **Nota:** este ejemplo está pensado para un laboratorio en una red controlada. El receptor `remote_write` no incorpora autenticación por sí mismo; no debe exponerse sin protección a Internet.
 
-#### Detener los servicios
-
-```bash
-docker compose down
-```
-
-Los volúmenes conservan los datos aunque se eliminen los contenedores. **No utilizar `docker compose down -v`** si se desea conservarlos.
-
 > Repositorio en construcción durante el vivo.
