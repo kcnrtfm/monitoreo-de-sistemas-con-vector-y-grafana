@@ -19,15 +19,17 @@ Explorar un flujo de monitoreo de sistemas basado en la recolección de métrica
 - **Vector:** recopilación, procesamiento y envío de métricas.
 - **Grafana:** visualización de métricas mediante paneles gráficos.
 
-## Grafana
+## Sistema de monitoreo
+
+### Grafana
 
 ![Logo de Grafana](https://upload.wikimedia.org/wikipedia/commons/a/a1/Grafana_logo.svg)
 
-### ¿Qué es Grafana?
+#### ¿Qué es Grafana?
 
 [Grafana](https://grafana.com/) es una plataforma de código abierto para consultar, analizar y visualizar datos provenientes de distintas fuentes mediante gráficos, indicadores y paneles interactivos (*dashboards*).
 
-### ¿Cómo funciona Grafana?
+#### ¿Cómo funciona Grafana?
 
 Grafana funciona como una plataforma de **consulta, análisis y visualización de datos**. Su arquitectura se basa en un servidor que se comunica con distintas fuentes de datos y una interfaz web desde la que se configuran las consultas y visualizaciones.
 
@@ -47,15 +49,15 @@ Grafana normalmente no almacena las métricas que visualiza: estas permanecen en
 
 ![Ejemplo de dashboard de Grafana](https://grafana.com/media/products/assets/cloud-grafana-0.png)
 
-## Prometheus
+### Prometheus
 
 ![Logo de Prometheus](https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/images/prometheus-logo.svg)
 
-### ¿Qué es Prometheus?
+#### ¿Qué es Prometheus?
 
 [Prometheus](https://prometheus.io/) es un sistema de monitoreo de código abierto que recopila y almacena métricas en una base de datos de series temporales. Cada muestra queda asociada a un instante de tiempo y puede identificarse mediante etiquetas.
 
-### ¿Cómo funciona Prometheus?
+#### ¿Cómo funciona Prometheus?
 
 Prometheus consulta periódicamente los endpoints HTTP de los sistemas que exponen métricas, normalmente en la ruta `/metrics`. Este mecanismo se conoce como **pull** o *scraping*.
 
@@ -69,12 +71,16 @@ Sus componentes principales son:
 4. **PromQL:** permite seleccionar, filtrar y agregar métricas.
 5. **Reglas y alertas:** evalúan expresiones sobre las métricas y detectan condiciones definidas.
 
-### ¿Cómo se relaciona con Grafana?
+#### ¿Cómo se relaciona con Grafana?
 
 Prometheus **almacena las métricas** y ofrece una API HTTP para consultarlas. Grafana se conecta a Prometheus como fuente de datos, ejecuta consultas PromQL y representa los resultados en paneles y dashboards.
 
 Así, Prometheus se encarga de obtener y conservar los datos, mientras que Grafana proporciona una interfaz para explorarlos y visualizarlos.
 
 **Documentación:** [Prometheus](https://prometheus.io/docs/introduction/overview/) · [Integración con Grafana](https://prometheus.io/docs/visualization/grafana/)
+
+### Instalación y configuración
+
+*Sección pendiente de desarrollo.*
 
 > Repositorio en construcción durante el vivo.
