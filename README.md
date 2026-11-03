@@ -47,4 +47,34 @@ Grafana normalmente no almacena las métricas que visualiza: estas permanecen en
 
 ![Ejemplo de dashboard de Grafana](https://grafana.com/media/products/assets/cloud-grafana-0.png)
 
+## Prometheus
+
+![Logo de Prometheus](https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/images/prometheus-logo.svg)
+
+### ¿Qué es Prometheus?
+
+[Prometheus](https://prometheus.io/) es un sistema de monitoreo de código abierto que recopila y almacena métricas en una base de datos de series temporales. Cada muestra queda asociada a un instante de tiempo y puede identificarse mediante etiquetas.
+
+### ¿Cómo funciona Prometheus?
+
+Prometheus consulta periódicamente los endpoints HTTP de los sistemas que exponen métricas, normalmente en la ruta `/metrics`. Este mecanismo se conoce como **pull** o *scraping*.
+
+Las métricas obtenidas se almacenan como series temporales y pueden consultarse mediante **PromQL**, su lenguaje de consultas. Prometheus también permite evaluar reglas y generar alertas.
+
+Sus componentes principales son:
+
+1. **Targets:** servicios o aplicaciones que exponen métricas.
+2. **Scraping:** recopilación periódica de las métricas de esos targets.
+3. **Almacenamiento de series temporales (TSDB):** conserva los valores recopilados y sus marcas de tiempo.
+4. **PromQL:** permite seleccionar, filtrar y agregar métricas.
+5. **Reglas y alertas:** evalúan expresiones sobre las métricas y detectan condiciones definidas.
+
+### ¿Cómo se relaciona con Grafana?
+
+Prometheus **almacena las métricas** y ofrece una API HTTP para consultarlas. Grafana se conecta a Prometheus como fuente de datos, ejecuta consultas PromQL y representa los resultados en paneles y dashboards.
+
+Así, Prometheus se encarga de obtener y conservar los datos, mientras que Grafana proporciona una interfaz para explorarlos y visualizarlos.
+
+**Documentación:** [Prometheus](https://prometheus.io/docs/introduction/overview/) · [Integración con Grafana](https://prometheus.io/docs/visualization/grafana/)
+
 > Repositorio en construcción durante el vivo.
