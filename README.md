@@ -298,4 +298,100 @@ Comprobamos su salida:
 
 No es necesario ejecutarlo con `sudo`; los privilegios se utilizan únicamente para instalarlo en `/opt/vector`.
 
+### Configuración de Vector
+
+El archivo [`vector.yaml`](vector.yaml) está ubicado en la raíz del repositorio y define tres etapas:
+
+1. **Recolección:** `host_metrics` obtiene las métricas del servidor (CPU, discos, sistemas de archivos, carga, memoria y red) cada 15 segundos. La fuente `exec` ejecuta `host-info.py` cada 60 segundos y decodifica su JSON.
+2. **Transformación:** `remap` prepara los campos del JSON y `log_to_metric` los convierte en una métrica `host_info` de valor `1`, utilizando hostname, sistema operativo, kernel, arquitectura y virtualización como etiquetas.
+3. **Envío:** `prometheus_remote_write` transmite ambas fuentes de métricas al servidor central Prometheus.
+
+#### Archivo `vector.yaml`
+
+```yaml
+# Configuración del agente Vector para GNU/Linux.
+# Reemplazar IP_DEL_SERVIDOR por la IP o nombre DNS del servidor de monitoreo.
+
+sources:
+  sistema:
+    type: host_metrics
+    scrape_interval_secs: 15
+    collectors:
+      - cpu
+      - disk
+      - filesystem
+      - load
+      - host
+      - memory
+      - network
+
+  identificacion:
+    type: exec
+    mode: scheduled
+    command:
+      - /usr/bin/python3
+      - /opt/vector/host-info.py
+    scheduled:
+      exec_interval_secs: 60
+    decoding:
+      codec: json
+
+transforms:
+  preparar_identificacion:
+    type: remap
+    inputs:
+      - identificacion
+    source: |
+      .value = 1
+      .virtualization = to_string(.virtualization) ?? "unknown"
+
+  metadatos:
+    type: log_to_metric
+    inputs:
+      - preparar_identificacion
+    metrics:
+      - type: gauge
+        field: value
+        name: host_info
+        tags:
+          host: "{{host}}"
+          os: "{{os}}"
+          kernel: "{{kernel}}"
+          architecture: "{{architecture}}"
+          virtualization: "{{virtualization}}"
+
+sinks:
+  prometheus:
+    type: prometheus_remote_write
+    inputs:
+      - sistema
+      - metadatos
+    endpoint: "http://IP_DEL_SERVIDOR:9090/api/v1/write"
+```
+
+El parámetro `endpoint` de `sinks.prometheus` indica **a qué servidor de monitoreo se envían los datos**. Se debe sustituir `IP_DEL_SERVIDOR` por la IP o el nombre DNS del servidor donde funciona Prometheus. No se configura aquí la IP del host monitoreado.
+
+#### Descargar y utilizar la configuración
+
+Descargar el archivo en el directorio que ya utilizamos para el script de identificación:
+
+```bash
+sudo curl -fsSL https://raw.githubusercontent.com/kcnrtfm/monitoreo-de-sistemas-con-vector-y-grafana/main/vector.yaml -o /opt/vector/vector.yaml
+```
+
+Editar la dirección de destino:
+
+```bash
+sudo nano /opt/vector/vector.yaml
+```
+
+Validar la configuración y ejecutar Vector:
+
+```bash
+vector validate /opt/vector/vector.yaml
+vector --config /opt/vector/vector.yaml
+```
+
+Esta ejecución mantiene Vector en primer plano. Para detenerlo se utiliza `Ctrl+C`.
+
 > Repositorio en construcción durante el vivo.
