@@ -124,6 +124,10 @@ services:
   prometheus:
     image: prom/prometheus:v3.7.3
     restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-remote-write-receiver"
     ports:
       - "9090:9090"
     volumes:
@@ -197,7 +201,20 @@ Vector incluye la etiqueta `host` para identificar el servidor y otras etiquetas
 
 Además, definimos una métrica informativa propia, `host_info`, cuyo valor será `1` y cuyas etiquetas contendrán el hostname, sistema operativo, versión del kernel, arquitectura y virtualización. Esta métrica **no se genera automáticamente** con `host_metrics`; la construiremos al configurar Vector.
 
-Prometheus no requiere declarar estas métricas previamente: las almacena cuando las obtiene desde un endpoint `/metrics`. Agregamos un trabajo de recolección para los servidores con Vector en `prometheus/prometheus.yml`:
+Prometheus no requiere declarar estas métricas previamente: las almacena al recibirlas. Para que los agentes Vector de distintos servidores puedan **enviar métricas** sin registrar sus direcciones IP, habilitamos el receptor `remote_write` en Prometheus.
+
+En `compose.yaml`, el servicio `prometheus` incorpora:
+
+```yaml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-remote-write-receiver"
+```
+
+Con esto, Prometheus acepta envíos en `http://IP_DEL_SERVIDOR:9090/api/v1/write`. La dirección corresponde al **servidor central de monitoreo**, no al host monitoreado. Cada Vector deberá apuntar a esa URL desde su configuración.
+
+El archivo `prometheus/prometheus.yml` mantiene solamente la recolección de métricas del propio Prometheus:
 
 ```yaml
 global:
@@ -207,21 +224,17 @@ scrape_configs:
   - job_name: prometheus
     static_configs:
       - targets: ["localhost:9090"]
-
-  - job_name: vector
-    static_configs:
-      - targets: ["192.0.2.10:9598"]
 ```
 
-**Antes de habilitar la recolección**, reemplazar `192.0.2.10` (dirección de ejemplo) por la IP del servidor donde estará instalado Vector. El puerto `9598` corresponde al exportador Prometheus de Vector, que configuraremos en la etapa siguiente. Prometheus consultará ese endpoint cada 15 segundos; hasta que Vector esté funcionando y sea accesible, ese target aparecerá como `DOWN`.
+No se agregan targets ni IP de los servidores Vector: sus métricas ingresarán por `remote_write`.
 
-Una vez editado `prometheus/prometheus.yml`, aplicar la configuración reiniciando el servicio:
+Para aplicar el cambio en `compose.yaml` desde el directorio `sistema-monitoreo/`, recrear el contenedor:
 
 ```bash
-docker compose restart prometheus
+docker compose up -d
 ```
 
-Los targets pueden verificarse en `http://IP_DEL_SERVIDOR:9090/targets`.
+**Nota:** este ejemplo está pensado para un laboratorio en una red controlada. El receptor `remote_write` no incorpora autenticación por sí mismo; no debe exponerse sin protección a Internet.
 
 #### Detener los servicios
 
