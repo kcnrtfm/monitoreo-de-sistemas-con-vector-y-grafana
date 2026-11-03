@@ -12,7 +12,9 @@ Vamos a explorar cómo utilizarla para obtener información de nuestros servidor
 
 ## Objetivo
 
-Explorar un flujo de monitoreo de sistemas basado en la recolección de métricas con Vector y su visualización en Grafana.
+Implementar un sistema de monitoreo de servidores GNU/Linux utilizando **Vector** para recopilar métricas de CPU, memoria, disco, red y tiempo de actividad, junto con información de identificación y características del sistema.
+
+Las métricas serán enviadas a **Prometheus** para su almacenamiento y consulta, y posteriormente visualizadas mediante **Grafana**, a través de dashboards que permitan identificar cada servidor y observar su estado y comportamiento en tiempo real.
 
 ## Herramientas
 
