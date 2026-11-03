@@ -250,4 +250,8 @@ Para importarlo desde el navegador:
 
 Los paneles mostrarán datos cuando Vector envíe las métricas correspondientes. El panel de identificación requiere además la métrica personalizada `host_info`, que se generará en la etapa de configuración de Vector.
 
+## Recolección y envío de métricas con Vector
+
+En esta etapa instalaremos y configuraremos Vector en los servidores GNU/Linux que queremos monitorear. Vector recopilará las métricas de CPU, memoria, disco, red y tiempo de actividad, incorporará los metadatos de identificación del host y enviará los datos al servidor central de Prometheus mediante `remote_write`, para su visualización en Grafana.
+
 > Repositorio en construcción durante el vivo.
