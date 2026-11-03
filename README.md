@@ -19,4 +19,14 @@ Explorar un flujo de monitoreo de sistemas basado en la recolección de métrica
 - **Vector:** recopilación, procesamiento y envío de métricas.
 - **Grafana:** visualización de métricas mediante paneles gráficos.
 
+## Grafana
+
+![Logo de Grafana](https://upload.wikimedia.org/wikipedia/commons/a/a1/Grafana_logo.svg)
+
+### ¿Qué es Grafana?
+
+[Grafana](https://grafana.com/) es una plataforma de código abierto orientada a la consulta y visualización de datos. Permite crear paneles (*dashboards*) con gráficos e indicadores a partir de distintas fuentes de datos, como sistemas de almacenamiento de métricas.
+
+En este tutorial la utilizaremos para visualizar las métricas de nuestros servidores mediante paneles gráficos.
+
 > Repositorio en construcción durante el vivo.
