@@ -172,8 +172,8 @@ El comando crea la red y los volúmenes, y pone en marcha ambos contenedores.
 
 #### Acceder a las interfaces
 
-- **Grafana:** http://localhost:3000 — usuario `admin` y la contraseña definida en `.env`.
-- **Prometheus:** http://localhost:9090
+- **Grafana:** http://IP_DEL_SERVIDOR:3000 — usuario `admin` y la contraseña definida en `.env`.
+- **Prometheus:** http://IP_DEL_SERVIDOR:9090
 
 Los puertos están publicados en las interfaces del servidor. Desde otro equipo de la red, acceder mediante `http://IP_DEL_SERVIDOR:3000` (Grafana) y `http://IP_DEL_SERVIDOR:9090` (Prometheus). En una VM o servidor en la nube, el firewall también debe permitir el acceso a esos puertos.
 
