@@ -25,8 +25,24 @@ Explorar un flujo de monitoreo de sistemas basado en la recolección de métrica
 
 ### ¿Qué es Grafana?
 
-[Grafana](https://grafana.com/) es una plataforma de código abierto orientada a la consulta y visualización de datos. Permite crear paneles (*dashboards*) con gráficos e indicadores a partir de distintas fuentes de datos, como sistemas de almacenamiento de métricas.
+[Grafana](https://grafana.com/) es una plataforma de código abierto para consultar, analizar y visualizar datos provenientes de distintas fuentes mediante gráficos, indicadores y paneles interactivos (*dashboards*).
 
-En este tutorial la utilizaremos para visualizar las métricas de nuestros servidores mediante paneles gráficos.
+### ¿Cómo funciona Grafana?
+
+Grafana funciona como una plataforma de **consulta, análisis y visualización de datos**. Su arquitectura se basa en un servidor que se comunica con distintas fuentes de datos y una interfaz web desde la que se configuran las consultas y visualizaciones.
+
+Sus componentes principales son:
+
+1. **Fuentes de datos (Data Sources):** conexiones con sistemas externos como Prometheus, InfluxDB, PostgreSQL o Loki, que proporcionan los datos a visualizar.
+2. **Consultas (Queries):** Grafana ejecuta consultas sobre las fuentes configuradas, utilizando el mecanismo o lenguaje correspondiente a cada sistema, como PromQL o SQL.
+3. **Paneles (Panels):** los resultados se representan mediante gráficos temporales, tablas, indicadores numéricos y otras visualizaciones.
+4. **Tableros (Dashboards):** agrupan múltiples paneles en una misma interfaz para observar diferentes variables.
+5. **Alertas (Alerting):** permiten evaluar condiciones sobre los datos y generar notificaciones cuando se cumplen determinados criterios.
+
+Grafana dispone de un **backend** que administra conexiones, consultas, usuarios, permisos y alertas, y un **frontend web** para construir consultas, configurar paneles y explorar resultados.
+
+Los paneles pueden actualizarse automáticamente mediante consultas periódicas, permitiendo visualizar la evolución de los datos en el tiempo.
+
+Grafana normalmente no almacena las métricas que visualiza: estas permanecen en sus sistemas de origen y Grafana las consulta cuando necesita representarlas.
 
 > Repositorio en construcción durante el vivo.
