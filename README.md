@@ -278,4 +278,24 @@ Este procedimiento instala Vector en el directorio del usuario; todavía no conf
 
 **Documentación oficial:** https://vector.dev/docs/setup/installation/
 
+### Identificación del servidor
+
+Para obtener los metadatos del host utilizaremos [`host-info.py`](host-info.py). El script devuelve un objeto JSON con el nombre del servidor, sistema operativo, kernel, arquitectura y tipo de virtualización. Esta salida se utilizará posteriormente como entrada para las transformaciones de Vector.
+
+Requiere Python 3. En el servidor monitoreado, descargamos el script en `/opt/vector`:
+
+```bash
+sudo install -d -m 755 /opt/vector
+sudo curl -fsSL https://raw.githubusercontent.com/kcnrtfm/monitoreo-de-sistemas-con-vector-y-grafana/main/host-info.py -o /opt/vector/host-info.py
+sudo chmod 755 /opt/vector/host-info.py
+```
+
+Comprobamos su salida:
+
+```bash
+/opt/vector/host-info.py
+```
+
+No es necesario ejecutarlo con `sudo`; los privilegios se utilizan únicamente para instalarlo en `/opt/vector`.
+
 > Repositorio en construcción durante el vivo.
