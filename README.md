@@ -81,6 +81,60 @@ Así, Prometheus se encarga de obtener y conservar los datos, mientras que Grafa
 
 ### Instalación y configuración
 
-*Sección pendiente de desarrollo.*
+Vamos a desplegar **Prometheus y Grafana con Docker Compose**, utilizando una red exclusiva para ambos servicios y volúmenes persistentes para conservar sus datos.
+
+#### Requisitos
+
+Docker Engine y el complemento Docker Compose (`docker compose`).
+
+#### Estructura del despliegue
+
+```text
+compose.yaml
+.env.example
+prometheus/
+  prometheus.yml
+grafana/
+  provisioning/
+    datasources/
+      prometheus.yml
+```
+
+- `compose.yaml`: define los servicios, la red `monitoreo` y los volúmenes `prometheus_data` y `grafana_data`.
+- `prometheus/prometheus.yml`: configura la recolección de métricas cada 15 segundos; inicialmente Prometheus recopila sus propias métricas.
+- `grafana/provisioning/datasources/prometheus.yml`: registra automáticamente Prometheus como fuente de datos de Grafana.
+
+#### Iniciar los servicios
+
+Desde la raíz del repositorio:
+
+```bash
+cp .env.example .env
+```
+
+Editar `.env` y reemplazar `cambiar-esta-contrasena` por una contraseña propia. El archivo `.env` está excluido de Git.
+
+```bash
+docker compose up -d
+```
+
+El comando crea la red y los volúmenes, y pone en marcha ambos contenedores.
+
+#### Acceder a las interfaces
+
+- **Grafana:** http://localhost:3000 — usuario `admin` y la contraseña definida en `.env`.
+- **Prometheus:** http://localhost:9090
+
+Los puertos están vinculados a `127.0.0.1`, por lo que las interfaces solo son accesibles desde el equipo donde se ejecuta Docker. Para un servidor remoto sería necesario un acceso seguro adicional.
+
+En Grafana, la fuente de datos **Prometheus** ya estará configurada con la URL interna `http://prometheus:9090`. Podemos comprobar su funcionamiento desde **Explore**, ejecutando la consulta PromQL `up`, que debería mostrar la serie correspondiente al propio Prometheus.
+
+#### Detener los servicios
+
+```bash
+docker compose down
+```
+
+Los volúmenes conservan los datos aunque se eliminen los contenedores. **No utilizar `docker compose down -v`** si se desea conservarlos.
 
 > Repositorio en construcción durante el vivo.
