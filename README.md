@@ -45,4 +45,6 @@ Los paneles pueden actualizarse automáticamente mediante consultas periódicas,
 
 Grafana normalmente no almacena las métricas que visualiza: estas permanecen en sus sistemas de origen y Grafana las consulta cuando necesita representarlas.
 
+![Ejemplo de dashboard de Grafana](https://grafana.com/media/products/assets/cloud-grafana-0.png)
+
 > Repositorio en construcción durante el vivo.
