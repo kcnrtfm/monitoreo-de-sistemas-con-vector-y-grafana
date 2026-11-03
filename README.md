@@ -85,9 +85,18 @@ Vamos a desplegar **Prometheus y Grafana con Docker Compose**, utilizando una re
 
 #### Requisitos
 
-Docker Engine y el complemento Docker Compose (`docker compose`).
+Git, Docker Engine y el complemento Docker Compose (`docker compose`).
+
+#### Obtener el proyecto
+
+```bash
+git clone https://github.com/kcnrtfm/monitoreo-de-sistemas-con-vector-y-grafana.git
+cd monitoreo-de-sistemas-con-vector-y-grafana/sistema-monitoreo
+```
 
 #### Estructura del despliegue
+
+Todos los archivos de este despliegue se encuentran en `sistema-monitoreo/`:
 
 ```text
 compose.yaml
@@ -106,7 +115,7 @@ grafana/
 
 #### Iniciar los servicios
 
-Desde la raíz del repositorio:
+Desde el directorio `sistema-monitoreo/`:
 
 ```bash
 cp .env.example .env
