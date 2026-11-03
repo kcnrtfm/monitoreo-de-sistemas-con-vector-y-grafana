@@ -23,6 +23,37 @@ Las métricas serán enviadas a **Prometheus** para su almacenamiento y consulta
 
 ## Sistema de monitoreo
 
+### Modelo de métricas para el laboratorio
+
+Antes de conectar Vector, definimos qué datos esperamos consultar en Prometheus. Prometheus almacena **series temporales** identificadas por un nombre de métrica y etiquetas (*labels*); no es necesario declarar previamente un esquema de tablas.
+
+Usaremos, como base, las métricas generadas por la fuente `host_metrics` de Vector:
+
+| Categoría | Métricas | Tipo | Unidad |
+| --- | --- | --- | --- |
+| CPU | `host_cpu_seconds_total`, `load1`, `load5`, `load15` | Counter / Gauge | segundos / carga |
+| Memoria | `memory_used_bytes`, `memory_available_bytes` | Gauge | bytes |
+| Disco | `filesystem_total_bytes`, `filesystem_used_bytes`, `filesystem_free_bytes` | Gauge | bytes |
+| Red | `network_receive_bytes_total`, `network_transmit_bytes_total` | Counter | bytes acumulados |
+| Tiempo de actividad | `boot_time` | Gauge | fecha de arranque (Unix timestamp) |
+
+El **uptime** se calcula a partir de `boot_time`. Para obtener tasas de CPU o tráfico por segundo en Grafana utilizaremos consultas PromQL, por ejemplo `rate()`, sobre los contadores acumulativos.
+
+**Etiquetas:** `host` identifica al servidor; `cpu` y `mode` distinguen núcleos y estados de CPU; `device` identifica interfaces de red o dispositivos de almacenamiento, según la métrica; `filesystem` identifica el tipo de sistema de archivos. Las etiquetas concretas dependen de cada métrica.
+
+**Metadatos del host:** además de las métricas, queremos conservar hostname, sistema operativo, versión del kernel, arquitectura y tipo de virtualización, tomando como referencia la información de `hostnamectl`. Proponemos representarlos mediante una métrica informativa propia, por ejemplo:
+
+```prometheus
+host_info{host="servidor01",os="GNU/Linux",kernel="6.x",architecture="x86_64",virtualization="kvm"} 1
+```
+
+`host_info` es un **modelo propuesto para el taller**, no una métrica generada automáticamente por `host_metrics`: habrá que producirla al configurar Vector. Los metadatos se mantienen como etiquetas de esa métrica informativa, evitando repetirlos en todas las series de rendimiento.
+
+**Integración prevista:** cada Vector recopilará métricas del host y las expondrá mediante un endpoint HTTP `/metrics` usando `prometheus_exporter`. Prometheus consultará periódicamente esos endpoints (*scraping*) y almacenará las series. La lista de servidores se incorporará posteriormente en `prometheus/prometheus.yml`; por ahora la configuración existente sólo monitorea a Prometheus.
+
+Documentación: [métricas del host en Vector](https://vector.dev/docs/reference/configuration/sources/host_metrics/) · [exportador Prometheus de Vector](https://vector.dev/docs/reference/configuration/sinks/prometheus_exporter/).
+
+
 ### Grafana
 
 ![Logo de Grafana](https://upload.wikimedia.org/wikipedia/commons/a/a1/Grafana_logo.svg)
@@ -72,36 +103,6 @@ Sus componentes principales son:
 3. **Almacenamiento de series temporales (TSDB):** conserva los valores recopilados y sus marcas de tiempo.
 4. **PromQL:** permite seleccionar, filtrar y agregar métricas.
 5. **Reglas y alertas:** evalúan expresiones sobre las métricas y detectan condiciones definidas.
-
-#### Modelo de métricas para el laboratorio
-
-Antes de conectar Vector, definimos qué datos esperamos consultar en Prometheus. Prometheus almacena **series temporales** identificadas por un nombre de métrica y etiquetas (*labels*); no es necesario declarar previamente un esquema de tablas.
-
-Usaremos, como base, las métricas generadas por la fuente `host_metrics` de Vector:
-
-| Categoría | Métricas | Tipo | Unidad |
-| --- | --- | --- | --- |
-| CPU | `host_cpu_seconds_total`, `load1`, `load5`, `load15` | Counter / Gauge | segundos / carga |
-| Memoria | `memory_used_bytes`, `memory_available_bytes` | Gauge | bytes |
-| Disco | `filesystem_total_bytes`, `filesystem_used_bytes`, `filesystem_free_bytes` | Gauge | bytes |
-| Red | `network_receive_bytes_total`, `network_transmit_bytes_total` | Counter | bytes acumulados |
-| Tiempo de actividad | `boot_time` | Gauge | fecha de arranque (Unix timestamp) |
-
-El **uptime** se calcula a partir de `boot_time`. Para obtener tasas de CPU o tráfico por segundo en Grafana utilizaremos consultas PromQL, por ejemplo `rate()`, sobre los contadores acumulativos.
-
-**Etiquetas:** `host` identifica al servidor; `cpu` y `mode` distinguen núcleos y estados de CPU; `device` identifica interfaces de red o dispositivos de almacenamiento, según la métrica; `filesystem` identifica el tipo de sistema de archivos. Las etiquetas concretas dependen de cada métrica.
-
-**Metadatos del host:** además de las métricas, queremos conservar hostname, sistema operativo, versión del kernel, arquitectura y tipo de virtualización, tomando como referencia la información de `hostnamectl`. Proponemos representarlos mediante una métrica informativa propia, por ejemplo:
-
-```prometheus
-host_info{host="servidor01",os="GNU/Linux",kernel="6.x",architecture="x86_64",virtualization="kvm"} 1
-```
-
-`host_info` es un **modelo propuesto para el taller**, no una métrica generada automáticamente por `host_metrics`: habrá que producirla al configurar Vector. Los metadatos se mantienen como etiquetas de esa métrica informativa, evitando repetirlos en todas las series de rendimiento.
-
-**Integración prevista:** cada Vector recopilará métricas del host y las expondrá mediante un endpoint HTTP `/metrics` usando `prometheus_exporter`. Prometheus consultará periódicamente esos endpoints (*scraping*) y almacenará las series. La lista de servidores se incorporará posteriormente en `prometheus/prometheus.yml`; por ahora la configuración existente sólo monitorea a Prometheus.
-
-Documentación: [métricas del host en Vector](https://vector.dev/docs/reference/configuration/sources/host_metrics/) · [exportador Prometheus de Vector](https://vector.dev/docs/reference/configuration/sinks/prometheus_exporter/).
 
 #### ¿Cómo se relaciona con Grafana?
 
