@@ -181,6 +181,48 @@ Los puertos están publicados en las interfaces del servidor. Desde otro equipo 
 
 En Grafana, la fuente de datos **Prometheus** ya estará configurada con la URL interna `http://prometheus:9090`. Podemos comprobar su funcionamiento desde **Explore**, ejecutando la consulta PromQL `up`, que debería mostrar la serie correspondiente al propio Prometheus.
 
+#### Modelo de métricas y configuración de Prometheus
+
+Para el laboratorio monitorearemos CPU, memoria, disco, red y tiempo de actividad. Las series temporales tendrán un nombre, un valor y etiquetas que permitan distinguir el servidor y, cuando corresponda, el recurso medido.
+
+| Datos | Métricas previstas de Vector | Tipo |
+| --- | --- | --- |
+| CPU y carga | `host_cpu_seconds_total`, `load1`, `load5`, `load15` | Contador / indicadores |
+| Memoria | `memory_total_bytes`, `memory_used_bytes`, `memory_available_bytes` | Indicadores |
+| Disco | `filesystem_total_bytes`, `filesystem_used_bytes`, `filesystem_free_bytes` | Indicadores |
+| Red | `network_receive_bytes_total`, `network_transmit_bytes_total` | Contadores |
+| Tiempo de actividad | `uptime` | Indicador (segundos) |
+
+Vector incluye la etiqueta `host` para identificar el servidor y otras etiquetas según el recurso, como `cpu`, `mode`, `device` y `filesystem`.
+
+Además, definimos una métrica informativa propia, `host_info`, cuyo valor será `1` y cuyas etiquetas contendrán el hostname, sistema operativo, versión del kernel, arquitectura y virtualización. Esta métrica **no se genera automáticamente** con `host_metrics`; la construiremos al configurar Vector.
+
+Prometheus no requiere declarar estas métricas previamente: las almacena cuando las obtiene desde un endpoint `/metrics`. Agregamos un trabajo de recolección para los servidores con Vector en `prometheus/prometheus.yml`:
+
+```yaml
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: vector
+    static_configs:
+      - targets: ["192.0.2.10:9598"]
+```
+
+**Antes de habilitar la recolección**, reemplazar `192.0.2.10` (dirección de ejemplo) por la IP del servidor donde estará instalado Vector. El puerto `9598` corresponde al exportador Prometheus de Vector, que configuraremos en la etapa siguiente. Prometheus consultará ese endpoint cada 15 segundos; hasta que Vector esté funcionando y sea accesible, ese target aparecerá como `DOWN`.
+
+Una vez editado `prometheus/prometheus.yml`, aplicar la configuración reiniciando el servicio:
+
+```bash
+docker compose restart prometheus
+```
+
+Los targets pueden verificarse en `http://IP_DEL_SERVIDOR:9090/targets`.
+
 #### Detener los servicios
 
 ```bash
