@@ -191,11 +191,11 @@ Para el laboratorio monitorearemos CPU, memoria, disco, red y tiempo de activida
 
 | Datos | Métricas previstas de Vector | Tipo |
 | --- | --- | --- |
-| CPU y carga | `host_cpu_seconds_total`, `load1`, `load5`, `load15` | Contador / indicadores |
-| Memoria | `memory_total_bytes`, `memory_used_bytes`, `memory_available_bytes` | Indicadores |
-| Disco | `filesystem_total_bytes`, `filesystem_used_bytes`, `filesystem_free_bytes` | Indicadores |
-| Red | `network_receive_bytes_total`, `network_transmit_bytes_total` | Contadores |
-| Tiempo de actividad | `uptime` | Indicador (segundos) |
+| CPU y carga | `host_cpu_seconds_total`, `host_load1`, `host_load5`, `host_load15` | Contador / indicadores |
+| Memoria | `host_memory_total_bytes`, `host_memory_used_bytes`, `host_memory_available_bytes` | Indicadores |
+| Disco | `host_filesystem_total_bytes`, `host_filesystem_used_bytes`, `host_filesystem_free_bytes` | Indicadores |
+| Red | `host_network_receive_bytes_total`, `host_network_transmit_bytes_total` | Contadores |
+| Tiempo de actividad | `host_uptime` | Indicador (segundos) |
 
 Vector incluye la etiqueta `host` para identificar el servidor y otras etiquetas según el recurso, como `cpu`, `mode`, `device` y `filesystem`.
 
