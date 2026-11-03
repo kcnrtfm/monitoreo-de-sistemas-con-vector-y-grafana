@@ -113,6 +113,47 @@ grafana/
 - `prometheus/prometheus.yml`: configura la recolección de métricas cada 15 segundos; inicialmente Prometheus recopila sus propias métricas.
 - `grafana/provisioning/datasources/prometheus.yml`: registra automáticamente Prometheus como fuente de datos de Grafana.
 
+#### Archivo Docker Compose
+
+El archivo `sistema-monitoreo/compose.yaml` contiene la definición completa del despliegue:
+
+```yaml
+services:
+  prometheus:
+    image: prom/prometheus:v3.7.3
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - monitoreo
+
+  grafana:
+    image: grafana/grafana:12.2.1
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Definir GRAFANA_ADMIN_PASSWORD en .env}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - monitoreo
+    depends_on:
+      - prometheus
+
+networks:
+  monitoreo:
+
+volumes:
+  prometheus_data:
+  grafana_data:
+```
+
 #### Iniciar los servicios
 
 Desde el directorio `sistema-monitoreo/`:
