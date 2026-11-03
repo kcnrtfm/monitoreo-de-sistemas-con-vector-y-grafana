@@ -228,12 +228,6 @@ scrape_configs:
 
 No se agregan targets ni IP de los servidores Vector: sus métricas ingresarán por `remote_write`.
 
-Para aplicar el cambio en `compose.yaml` desde el directorio `sistema-monitoreo/`, recrear el contenedor:
-
-```bash
-docker compose up -d
-```
-
 **Nota:** este ejemplo está pensado para un laboratorio en una red controlada. El receptor `remote_write` no incorpora autenticación por sí mismo; no debe exponerse sin protección a Internet.
 
 #### Dashboard de Grafana
