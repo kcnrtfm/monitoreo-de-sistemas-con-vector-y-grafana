@@ -236,4 +236,24 @@ docker compose up -d
 
 **Nota:** este ejemplo está pensado para un laboratorio en una red controlada. El receptor `remote_write` no incorpora autenticación por sí mismo; no debe exponerse sin protección a Internet.
 
+#### Dashboard de Grafana
+
+Grafana organiza la visualización en **dashboards** (tableros), compuestos por **paneles**. Cada panel contiene una o más consultas a Prometheus y representa sus resultados como indicadores o gráficos.
+
+Para este laboratorio utilizaremos un único dashboard con una **fila repetida por servidor**. Cada fila reúne los datos de identificación y las visualizaciones de CPU, carga del sistema, memoria, disco, red y uptime. Así podemos comparar varios servidores en una misma pantalla.
+
+La variable `host` obtiene automáticamente los nombres de servidores de las métricas almacenadas en Prometheus. Al seleccionar **All**, Grafana repite la fila para cada host disponible. Por eso, cuando Vector comience a enviar datos de un servidor nuevo, podrá incorporarse al mismo dashboard sin crear paneles manualmente.
+
+El archivo [`dashboard-servidores.json`](dashboard-servidores.json), ubicado en la raíz del repositorio, contiene la definición del dashboard.
+
+Para importarlo desde el navegador:
+
+1. Abrir Grafana en `http://IP_DEL_SERVIDOR:3000`.
+2. Ir a **Dashboards → New → Import** (la opción también puede aparecer como **Import dashboard**).
+3. Cargar el archivo `dashboard-servidores.json` descargado del repositorio.
+4. Seleccionar la fuente de datos **Prometheus** y confirmar la importación.
+5. En el selector **Servidores**, elegir **All** para visualizar los hosts disponibles.
+
+Los paneles mostrarán datos cuando Vector envíe las métricas correspondientes. El panel de identificación requiere además la métrica personalizada `host_info`, que se generará en la etapa de configuración de Vector.
+
 > Repositorio en construcción durante el vivo.
