@@ -2,6 +2,8 @@
 
 Material de trabajo para el vivo del **3 de noviembre de 2026**.
 
+**Transmisión en vivo:** https://youtube.com/live/oEYg71x0RoQ
+
 ## Descripción
 
 En este encuentro vamos a trabajar con [Vector](https://vector.dev/), una herramienta de código abierto que permite recopilar, transformar y transmitir datos de observabilidad, incluidas métricas de diferentes sistemas.
