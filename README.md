@@ -254,4 +254,28 @@ Los paneles mostrarán datos cuando Vector envíe las métricas correspondientes
 
 En esta etapa instalaremos y configuraremos Vector en los servidores GNU/Linux que queremos monitorear. Vector recopilará las métricas de CPU, memoria, disco, red y tiempo de actividad, incorporará los metadatos de identificación del host y enviará los datos al servidor central de Prometheus mediante `remote_write`, para su visualización en Grafana.
 
+### Instalación de Vector
+
+En cada servidor GNU/Linux que queremos monitorear, instalamos Vector mediante el script oficial:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSfL https://sh.vector.dev | bash
+```
+
+Para utilizar el ejecutable en la sesión actual de la terminal:
+
+```bash
+export PATH="$HOME/.vector/bin:$PATH"
+```
+
+Verificamos la instalación:
+
+```bash
+vector --version
+```
+
+Este procedimiento instala Vector en el directorio del usuario; todavía no configura la recolección de métricas, su envío a Prometheus ni su ejecución como servicio.
+
+**Documentación oficial:** https://vector.dev/docs/setup/installation/
+
 > Repositorio en construcción durante el vivo.
