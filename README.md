@@ -123,7 +123,7 @@ services:
     image: prom/prometheus:v3.7.3
     restart: unless-stopped
     ports:
-      - "127.0.0.1:9090:9090"
+      - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -134,7 +134,7 @@ services:
     image: grafana/grafana:12.2.1
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:3000"
+      - "3000:3000"
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Definir GRAFANA_ADMIN_PASSWORD en .env}
@@ -175,7 +175,7 @@ El comando crea la red y los volúmenes, y pone en marcha ambos contenedores.
 - **Grafana:** http://localhost:3000 — usuario `admin` y la contraseña definida en `.env`.
 - **Prometheus:** http://localhost:9090
 
-Los puertos están vinculados a `127.0.0.1`, por lo que las interfaces solo son accesibles desde el equipo donde se ejecuta Docker. Para un servidor remoto sería necesario un acceso seguro adicional.
+Los puertos están publicados en las interfaces del servidor. Desde otro equipo de la red, acceder mediante `http://IP_DEL_SERVIDOR:3000` (Grafana) y `http://IP_DEL_SERVIDOR:9090` (Prometheus). En una VM o servidor en la nube, el firewall también debe permitir el acceso a esos puertos.
 
 En Grafana, la fuente de datos **Prometheus** ya estará configurada con la URL interna `http://prometheus:9090`. Podemos comprobar su funcionamiento desde **Explore**, ejecutando la consulta PromQL `up`, que debería mostrar la serie correspondiente al propio Prometheus.
 
