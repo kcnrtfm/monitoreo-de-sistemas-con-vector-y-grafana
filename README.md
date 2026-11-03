@@ -394,4 +394,50 @@ vector --config /opt/vector/vector.yaml
 
 Esta ejecución mantiene Vector en primer plano. Para detenerlo se utiliza `Ctrl+C`.
 
+## Exploración de métricas con Prometheus y PromQL
+
+En este laboratorio, **Vector** obtiene las métricas de cada servidor y las envía a **Prometheus** mediante `remote_write`. Prometheus las almacena como **series temporales**: valores registrados a lo largo del tiempo, identificados por el nombre de la métrica y sus etiquetas. **Grafana** consulta esas series para construir el dashboard.
+
+Por ejemplo, `host_memory_used_bytes{host="servidor1"}` identifica la memoria utilizada por `servidor1`. El nombre indica qué se mide; la etiqueta `host` permite distinguir los servidores.
+
+### ¿Para qué sirven las consultas?
+
+Prometheus utiliza **PromQL** (Prometheus Query Language) para seleccionar, filtrar, combinar y calcular valores sobre las métricas. Podemos probar las siguientes expresiones directamente en `http://IP_DEL_SERVIDOR:9090`, en la pestaña **Query**, o desde **Explore** en Grafana.
+
+| Consulta PromQL | ¿Qué muestra? |
+| --- | --- |
+| `host_info` | Identificación de los servidores: sistema operativo, kernel, arquitectura y virtualización, disponibles como etiquetas. |
+| `host_uptime` | Segundos transcurridos desde el arranque de cada servidor. |
+| `host_memory_used_bytes{host="servidor1"}` | Memoria utilizada por un servidor específico, en bytes. Sustituir `servidor1` por un nombre real. |
+| `100 * (1 - host_memory_available_bytes / host_memory_total_bytes)` | Porcentaje de memoria no disponible respecto del total, por servidor. |
+| `100 * host_filesystem_used_ratio` | Porcentaje de uso de cada sistema de archivos. |
+| `host_load1` | Carga media del sistema durante el último minuto. |
+| `rate(host_network_receive_bytes_total[5m])` | Velocidad media de recepción de datos durante cinco minutos, en bytes por segundo. |
+
+### ¿Cómo interpretar una consulta?
+
+Tomemos el cálculo de uso de CPU utilizado en nuestro dashboard:
+
+```promql
+100 * (1 - avg by (host) (rate(host_cpu_seconds_total{mode="idle"}[5m])))
+```
+
+- `host_cpu_seconds_total` es un contador del tiempo de CPU.
+- `{mode="idle"}` selecciona el tiempo en que la CPU permanece inactiva.
+- `rate(...[5m])` calcula su tasa de incremento promedio durante los últimos cinco minutos.
+- `avg by (host)` reúne los resultados de los núcleos de cada servidor.
+- `1 - ...` estima la fracción de tiempo en actividad; al multiplicarla por `100`, obtenemos el porcentaje.
+
+Para observar **un único servidor**, podemos agregar un filtro `host`:
+
+```promql
+100 * (1 - avg by (host) (rate(host_cpu_seconds_total{host="servidor1",mode="idle"}[5m])))
+```
+
+La misma idea se utiliza en Grafana: la variable **Servidores** proporciona los valores de `host` y permite que los paneles muestren uno o todos los equipos sin modificar las consultas manualmente.
+
+En Prometheus, la vista **Table** permite inspeccionar los valores actuales y sus etiquetas; **Graph** permite observar cómo cambian a lo largo del tiempo. Así podemos comprobar qué métricas recibe Prometheus antes de analizarlas en el dashboard de Grafana.
+
+**Referencia:** [Conceptos básicos de PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/).
+
 > Repositorio en construcción durante el vivo.
