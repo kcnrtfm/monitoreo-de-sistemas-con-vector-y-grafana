@@ -38,10 +38,10 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "query": {
-          "query": "label_values(uptime, host)",
+          "query": "label_values(host_uptime, host)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
-        "definition": "label_values(uptime, host)",
+        "definition": "label_values(host_uptime, host)",
         "refresh": 1,
         "sort": 1,
         "multi": true,
@@ -172,7 +172,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - memory_available_bytes{host=~\"$host\"} / memory_total_bytes{host=~\"$host\"})",
+          "expr": "100 * (1 - host_memory_available_bytes{host=~\"$host\"} / host_memory_total_bytes{host=~\"$host\"})",
           "legendFormat": "RAM",
           "instant": true
         }
@@ -217,7 +217,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "uptime{host=~\"$host\"}",
+          "expr": "host_uptime{host=~\"$host\"}",
           "legendFormat": "Uptime",
           "instant": true
         }
@@ -260,7 +260,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "load1{host=~\"$host\"}",
+          "expr": "host_load1{host=~\"$host\"}",
           "legendFormat": "Load average",
           "instant": true
         }
@@ -349,17 +349,17 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "memory_total_bytes{host=~\"$host\"}",
+          "expr": "host_memory_total_bytes{host=~\"$host\"}",
           "legendFormat": "Total"
         },
         {
           "refId": "B",
-          "expr": "memory_used_bytes{host=~\"$host\"}",
+          "expr": "host_memory_used_bytes{host=~\"$host\"}",
           "legendFormat": "Utilizada"
         },
         {
           "refId": "C",
-          "expr": "memory_available_bytes{host=~\"$host\"}",
+          "expr": "host_memory_available_bytes{host=~\"$host\"}",
           "legendFormat": "Disponible"
         }
       ],
@@ -404,7 +404,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * filesystem_used_ratio{host=~\"$host\"}",
+          "expr": "100 * host_filesystem_used_ratio{host=~\"$host\"}",
           "legendFormat": "{{device}} ({{filesystem}})"
         }
       ],
@@ -450,12 +450,12 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "rate(network_receive_bytes_total{host=~\"$host\",device!=\"lo\"}[5m])",
+          "expr": "rate(host_network_receive_bytes_total{host=~\"$host\",device!=\"lo\"}[5m])",
           "legendFormat": "{{device}} - Entrada"
         },
         {
           "refId": "B",
-          "expr": "rate(network_transmit_bytes_total{host=~\"$host\",device!=\"lo\"}[5m])",
+          "expr": "rate(host_network_transmit_bytes_total{host=~\"$host\",device!=\"lo\"}[5m])",
           "legendFormat": "{{device}} - Salida"
         }
       ],
@@ -500,12 +500,12 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "rate(disk_read_bytes_total{host=~\"$host\"}[5m])",
+          "expr": "rate(host_disk_read_bytes_total{host=~\"$host\"}[5m])",
           "legendFormat": "{{device}} - Lectura"
         },
         {
           "refId": "B",
-          "expr": "rate(disk_written_bytes_total{host=~\"$host\"}[5m])",
+          "expr": "rate(host_disk_written_bytes_total{host=~\"$host\"}[5m])",
           "legendFormat": "{{device}} - Escritura"
         }
       ],
@@ -550,17 +550,17 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "load1{host=~\"$host\"}",
+          "expr": "host_load1{host=~\"$host\"}",
           "legendFormat": "1 minuto"
         },
         {
           "refId": "B",
-          "expr": "load5{host=~\"$host\"}",
+          "expr": "host_load5{host=~\"$host\"}",
           "legendFormat": "5 minutos"
         },
         {
           "refId": "C",
-          "expr": "load15{host=~\"$host\"}",
+          "expr": "host_load15{host=~\"$host\"}",
           "legendFormat": "15 minutos"
         }
       ],
